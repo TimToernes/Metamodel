@@ -7,7 +7,9 @@ from keras.models import Sequential
 from keras.layers import Dense
 from sklearn.preprocessing import StandardScaler
 from pickle import load, dump
-
+import os 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+os.chdir(dir_path)
 
 #%% Loading data
 

@@ -13,20 +13,15 @@ os.chdir(dir_path)
 
 #%%
 
-<<<<<<< HEAD
 
-    try :
-        n_rand_points = sys.argv[1]
-        Snapshots = sys.argv[2]
-    except :
-        n_rand_points = 30
-        Snapshots = 1
+try :
+    n_rand_points = sys.argv[1]
+    Snapshots = sys.argv[2]   
+except :
+    n_rand_points = 30
+    Snapshots = 1
 
-
-=======
-n_rand_points = 300
-Snapshots = 10
->>>>>>> a605582860a9c499ad13d563124efc21ea37788a
+print("{} random samples, {} snapshots".format(n_rand_points,Snapshots))
 
 #%%
 
@@ -152,7 +147,7 @@ for i in range(n_rand_points):
 X = pd.DataFrame(data = directions)
 X = X.sample(frac=1).reset_index(drop=True)
 X.to_csv('X')
-print('saved X')
+print('Saved X')
 # %% Creating Y
 
 Y = pd.DataFrame(columns=range(111))
@@ -160,8 +155,9 @@ for x in X.iterrows():
     Y.loc[len(Y)] = evaluate(x[1].values)
 
 Y.to_csv('Y')
-<<<<<<< HEAD
-print('saved Y')
-=======
-print('saved Y')
->>>>>>> a605582860a9c499ad13d563124efc21ea37788a
+print('Saved Y')
+
+#%% Training metamodel
+
+print("Training metamodel")
+import metamodel
