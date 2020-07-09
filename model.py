@@ -7,6 +7,9 @@ import numpy as np
 #from scipy.interpolate import griddata,interpn
 import pypsa
 from pypsa.linopt import get_var, linexpr, join_exprs, define_constraints, get_dual, get_con, write_objective
+import os 
+import sys 
+sys.path.append(os.getcwd())
 
 #%%
 
