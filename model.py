@@ -13,6 +13,7 @@ os.chdir(dir_path)
 
 #%%
 
+<<<<<<< HEAD
 
     try :
         n_rand_points = sys.argv[1]
@@ -22,6 +23,10 @@ os.chdir(dir_path)
         Snapshots = 1
 
 
+=======
+n_rand_points = 300
+Snapshots = 10
+>>>>>>> a605582860a9c499ad13d563124efc21ea37788a
 
 #%%
 
@@ -38,7 +43,7 @@ network.lopf(network.snapshots,
                                         #'presolve': 2,
                                         #'NumericFocus' : 3,
                                         'method':2,
-                                        'threads':4,
+                                        'threads':8,
                                         #'NumericFocus' : numeric_focus,
                                         'BarConvTol' : 1.e-6,
                                         'FeasibilityTol' : 1.e-2},
@@ -155,4 +160,8 @@ for x in X.iterrows():
     Y.loc[len(Y)] = evaluate(x[1].values)
 
 Y.to_csv('Y')
+<<<<<<< HEAD
 print('saved Y')
+=======
+print('saved Y')
+>>>>>>> a605582860a9c499ad13d563124efc21ea37788a
