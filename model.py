@@ -9,7 +9,8 @@ import pypsa
 from pypsa.linopt import get_var, linexpr, join_exprs, define_constraints, get_dual, get_con, write_objective
 import os 
 import sys 
-sys.path.append(os.getcwd())
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(dir_path)
 
 #%%
 
