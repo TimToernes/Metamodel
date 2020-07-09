@@ -13,8 +13,8 @@ os.chdir(dir_path)
 
 #%%
 
-n_rand_points = 30
-Snapshots = 1
+n_rand_points = 300
+Snapshots = 10
 
 #%%
 
@@ -31,7 +31,7 @@ network.lopf(network.snapshots,
                                         #'presolve': 2,
                                         #'NumericFocus' : 3,
                                         'method':2,
-                                        'threads':4,
+                                        'threads':8,
                                         #'NumericFocus' : numeric_focus,
                                         'BarConvTol' : 1.e-6,
                                         'FeasibilityTol' : 1.e-2},
@@ -147,5 +147,5 @@ Y = pd.DataFrame(columns=range(111))
 for x in X.iterrows():
     Y.loc[len(Y)] = evaluate(x[1].values)
 
-Y.to_csv('test')
+Y.to_csv('Y')
 print('saved Y')
