@@ -13,8 +13,15 @@ os.chdir(dir_path)
 
 #%%
 
-n_rand_points = 30
-Snapshots = 1
+
+    try :
+        n_rand_points = sys.argv[1]
+        Snapshots = sys.argv[2]
+    except :
+        n_rand_points = 30
+        Snapshots = 1
+
+
 
 #%%
 
@@ -147,5 +154,5 @@ Y = pd.DataFrame(columns=range(111))
 for x in X.iterrows():
     Y.loc[len(Y)] = evaluate(x[1].values)
 
-Y.to_csv('test')
+Y.to_csv('Y')
 print('saved Y')

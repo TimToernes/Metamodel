@@ -32,7 +32,7 @@ model.add(Dense(111, activation='tanh'))
 #%%
 
 model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
-model.fit(X, Y_scaled, epochs=200, batch_size=150)
+model.fit(X, Y_scaled, epochs=500, batch_size=150, workers=8, use_multiprocessing=True)
 
 #%% evaluate the keras model
 _, accuracy = model.evaluate(X, Y)
