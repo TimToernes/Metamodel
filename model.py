@@ -14,40 +14,38 @@ os.chdir(dir_path)
 #%%
 
 
-try :
-    n_rand_points = sys.argv[1]
-    Snapshots = sys.argv[2]   
-except :
-    n_rand_points = 30
-    Snapshots = 1
 
-print("{} random samples, {} snapshots".format(n_rand_points,Snapshots))
+#%%
+def import_network(Snapshots):
+    network = pypsa.Network()
+    network.import_from_hdf5('euro_95')
+    network.snapshots = network.snapshots[0:Snapshots]
+    return network
+
+
 
 #%%
 
-network = pypsa.Network()
-network.import_from_hdf5('euro_95')
-network.snapshots = network.snapshots[0:Snapshots]
+def initialize_network(network):
+    network.lopf(network.snapshots, 
+                solver_name='gurobi',
+                solver_options={'LogToConsole':0,
+                                            'crossover':0,
+                                            #'presolve': 2,
+                                            #'NumericFocus' : 3,
+                                            'method':2,
+                                            'threads':8,
+                                            #'NumericFocus' : numeric_focus,
+                                            'BarConvTol' : 1.e-6,
+                                            'FeasibilityTol' : 1.e-2},
+                pyomo=False,
+                keep_references=False,
+                formulation='kirchhoff',
+                #solver_dir = options['tmp_dir']
+                ),
+    network.old_objective = network.objective
+    return network
 
-
-#%%
-network.lopf(network.snapshots, 
-            solver_name='gurobi',
-            solver_options={'LogToConsole':0,
-                                        'crossover':0,
-                                        #'presolve': 2,
-                                        #'NumericFocus' : 3,
-                                        'method':2,
-                                        'threads':8,
-                                        #'NumericFocus' : numeric_focus,
-                                        'BarConvTol' : 1.e-6,
-                                        'FeasibilityTol' : 1.e-2},
-            pyomo=False,
-            keep_references=False,
-            formulation='kirchhoff',
-            #solver_dir = options['tmp_dir']
-            ),
-network.old_objective = network.objective
 
 #%%
 
@@ -100,7 +98,7 @@ def extra_functionality(network, snapshots, direction, options):
 
 # %%
 
-def evaluate(x):
+def evaluate(network,x):
 
     options = dict(mga_variables=network.generators.index.values, mga_slack_type='percent',mga_slack=0.1)
     direction = x
@@ -137,27 +135,43 @@ def rand_split(n):
 
     return rand_list
 
-# %% Creating X
 
-dim = 111
-directions = np.concatenate([np.diag(np.ones(dim)),-np.diag(np.ones(dim))],axis=0)
-for i in range(n_rand_points):
-    directions = np.append(directions,[rand_split(111)],axis=0) 
+#%%
 
-X = pd.DataFrame(data = directions)
-X = X.sample(frac=1).reset_index(drop=True)
-X.to_csv('X')
-print('Saved X')
-# %% Creating Y
+if __name__ == '__main__':
 
-Y = pd.DataFrame(columns=range(111))
-for x in X.iterrows():
-    Y.loc[len(Y)] = evaluate(x[1].values)
+    try :
+        n_rand_points = sys.argv[1]
+        Snapshots = sys.argv[2]   
+    except :
+        n_rand_points = 30
+        Snapshots = 1
 
-Y.to_csv('Y')
-print('Saved Y')
+    print("{} random samples, {} snapshots".format(n_rand_points,Snapshots))
 
-#%% Training metamodel
+    network = import_network(Snapshots)
+    network = initialize_network(network)
 
-print("Training metamodel")
-import metamodel
+
+    # Creating X
+    dim = 111
+    directions = np.concatenate([np.diag(np.ones(dim)),-np.diag(np.ones(dim))],axis=0)
+    for i in range(n_rand_points):
+        directions = np.append(directions,[rand_split(111)],axis=0) 
+
+    X = pd.DataFrame(data = directions)
+    X = X.sample(frac=1).reset_index(drop=True)
+    X.to_csv('X')
+    print('Saved X')
+    # Creating Y
+
+    Y = pd.DataFrame(columns=range(111))
+    for x in X.iterrows():
+        Y.loc[len(Y)] = evaluate(x[1].values)
+
+    Y.to_csv('Y')
+    print('Saved Y')
+
+    # Training metamodel
+    print("Training metamodel")
+    import metamodel
